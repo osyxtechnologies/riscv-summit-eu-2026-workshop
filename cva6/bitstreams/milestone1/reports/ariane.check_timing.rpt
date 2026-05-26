@@ -1,0 +1,407 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
+| Date         : Tue May 19 14:39:27 2026
+| Host         : manuale97-Prestige-15-A12UC running 64-bit Ubuntu 22.04.5 LTS
+| Command      : check_timing -file reports/ariane.check_timing.rpt
+| Design       : ariane_xilinx
+| Device       : 7k325t-ffg900
+| Speed File   : -2  PRODUCTION 1.12 2017-02-17
+------------------------------------------------------------------------------------
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (4212)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (27)
+5. checking no_input_delay (22)
+6. checking no_output_delay (24)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (0)
+10. checking partial_input_delay (3)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (4212)
+---------------------------
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/mstatus_q_reg[fs][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/mstatus_q_reg[fs][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/v_q_reg_rep/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/vsstatus_q_reg[fs][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/vsstatus_q_reg[fs][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/read_pointer_q_reg[0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[0].i_fifo_instr_data/read_pointer_q_reg[1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[0][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[1][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[2][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][ex][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][ex][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][10]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][11]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][12]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][13]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][14]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][15]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][1]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][2]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][3]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][4]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][5]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][6]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][7]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][8]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/gen_asic_queue.mem_q_reg[3][instr][9]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/read_pointer_q_reg[0]_rep__0/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_instr_fifo[1].i_fifo_instr_data/read_pointer_q_reg[1]_rep/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_pc_q_with_c.idx_ds_q_reg[0]/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_pc_q_with_c.idx_ds_q_reg[1]_rep/Q (HIGH)
+
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_pc_q_with_c.idx_ds_q_reg[1]_rep__0/Q (HIGH)
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (27)
+-------------------------------------------------
+ There are 27 pins that are not constrained for maximum delay. (HIGH)
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (22)
+-------------------------------
+ There are 22 input ports with no input delay specified. (HIGH)
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (24)
+--------------------------------
+ There are 24 ports with no output delay specified. (HIGH)
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (0)
+---------------------
+ There are 0 combinational loops in the design.
+
+
+10. checking partial_input_delay (3)
+------------------------------------
+ There are 3 input ports with partial input delay specified. (HIGH)
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+

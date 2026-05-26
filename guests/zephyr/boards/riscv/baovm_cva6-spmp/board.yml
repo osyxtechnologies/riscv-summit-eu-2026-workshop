@@ -1,0 +1,6 @@
+board:
+  name: baovm_cva6-spmp
+  full_name: Bao guest for CVA6-SPMP
+  vendor: osyx
+  socs:
+    - name: cv32a6
