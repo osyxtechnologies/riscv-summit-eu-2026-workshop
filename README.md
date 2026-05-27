@@ -97,6 +97,12 @@ docker run --rm hello-world
 
 You should see a `Hello from Docker!` message. If you do, Docker is ready.
 
+> **Use Docker Engine, not Docker Desktop.** On Linux, Docker Desktop runs
+> containers inside a managed VM that cannot pass through host USB devices, so
+> `make flash` cannot reach the Genesys 2 board. The steps above install the
+> native Docker Engine (`docker-ce`); if you already have Docker Desktop,
+> install Docker Engine for on-board runs.
+
 > For Debian, replace `ubuntu` with `debian` in the repository URL above.
 > Full instructions: https://docs.docker.com/engine/install/ubuntu/
 
@@ -143,7 +149,7 @@ following to the workshop:
 
 | Item | Notes |
 |------|-------|
-| Linux laptop - **Ubuntu 22.04 / 24.04 recommended** | macOS and Windows are not tested; USB passthrough into Docker works reliably on Linux |
+| Linux laptop - **Ubuntu 22.04 / 24.04 recommended** | macOS and Windows are not tested; USB passthrough works reliably with native **Docker Engine** on Linux (not Docker Desktop, see [Install Docker](#2-install-docker-ubuntu--debian)) |
 | [Genesys 2 Kintex-7](https://digilent.com/reference/programmable-logic/genesys-2/reference-manual) board + power supply | - |
 | 2× Micro-USB cable | One for the on-board FT2232H (JTAG + UART0), one for the board's USB port |
 | USB-to-TTL serial adapter (**FTDI FT232R / CP2102, 3.3 V**) | For the baremetal guest's UART console (milestone 2 onward) |
@@ -533,9 +539,7 @@ under QEMU instead, export `PLATFORM=qemu` and edit the matching skeletons under
 > (one guest, UART0), but the guest is now a full RTOS.*
 
 1. Open the milestone-1 skeleton:
-   ```bash
-   $EDITOR exercises/cva6/milestone1/config.c
-   ```
+
    If you are using QEMU, open `exercises/qemu/milestone1/config.c`
    instead. The commands below assume `PLATFORM=cva6` is still exported;
    keep `PLATFORM=qemu` exported for the QEMU path.
@@ -581,9 +585,7 @@ under QEMU instead, export `PLATFORM=qemu` and edit the matching skeletons under
 
 1. Open the milestone-2 skeleton (it extends the milestone-1 config
    you just wrote):
-   ```bash
-   $EDITOR exercises/cva6/milestone2/config.c
-   ```
+
    If you are using QEMU, open `exercises/qemu/milestone2/config.c`
    instead. The commands below assume the same `PLATFORM` value you used
    for milestone 1 is still exported.
