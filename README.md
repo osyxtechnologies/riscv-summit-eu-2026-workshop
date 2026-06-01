@@ -287,7 +287,7 @@ and `.mcs` files are checked into `cva6/bitstreams/<milestone>/`.
 > **At the workshop:** boards arrive pre-flashed with **milestone 0**. You
 > only need to reflash when advancing to a new milestone.
 
-### Option A - `make flash` (recommended)
+### Programming with `make flash`
 
 openFPGALoader is included in the workshop Docker image, so no host
 installation is needed. Program the SPI flash for the desired milestone
@@ -307,31 +307,6 @@ flash; if it stays off, the bitstream did not load.
 
 > If the FTDI adapter is not found, make sure no other process (e.g. OpenOCD
 > from a previous `make run`) is holding the USB device open.
-
----
-
-### Option B - Vivado Hardware Manager (GUI)
-
-1. Open **Vivado → Hardware Manager → Open Target → Auto Connect**.
-   The Genesys 2 should appear as `xc7k325t_0`.
-
-2. Right-click the device → **Add Configuration Memory Device**.
-   Search for and select:
-   ```
-   s25fl256sxxxxxx0-spi-x1_x2_x4
-   ```
-   Click **OK** and confirm when asked to program it now.
-
-3. In the **Program Configuration Memory Device** dialog:
-   - **Configuration file**: select
-     `cva6/bitstreams/<milestone>/ariane_xilinx.mcs`
-   - Leave all other fields at their defaults.
-   - Click **OK**.
-
-   Programming takes ≈ 2 minutes.
-
-4. When Vivado reports success, **power-cycle the board** or press the
-   on-board **PROG** button to load the new bitstream from flash.
 
 ---
 
@@ -408,6 +383,33 @@ When `PLATFORM=cva6`, `make run` invokes `cva6/launch.sh cva6/<CONFIG>.gdb`, whi
 
 Override the UART tty with `CVA6_UART=/dev/ttyUSBx` if your host
 enumerates the FTDI differently.
+
+The `ttyUSBx` numbering is **not** deterministic across hosts, and the JTAG
+adapter also claims `ttyUSBx` nodes, so the consoles are not reliably
+`ttyUSB0`/`ttyUSB1`. List the devices by their stable USB identifiers:
+
+```bash
+ls -l /dev/serial/by-id/
+```
+
+```
+usb-Digilent_Digilent_Adept_USB_Device_200300B0BD57-if00-port0 -> ../../ttyUSB0   # JTAG (ignore)
+usb-Digilent_Digilent_Adept_USB_Device_200300B0BD57-if01-port0 -> ../../ttyUSB1   # JTAG (ignore)
+usb-FTDI_FT232R_USB_UART_A904CWHH-if00-port0                    -> ../../ttyUSB2   # FTDI UART
+usb-FTDI_FT232R_USB_UART_A50285BI-if00-port0                    -> ../../ttyUSB3   # FTDI UART
+```
+
+The `Digilent ... Adept` entries are the JTAG adapter (used by OpenOCD, not a
+console) - ignore them. The two `FTDI ... UART` entries are the CVA6 UARTs: set
+`CVA6_UART` and `CVA6_UART2` to those two nodes, e.g.
+
+```bash
+make run CONFIG=milestone2 CVA6_UART=/dev/ttyUSB2 CVA6_UART2=/dev/ttyUSB3
+```
+
+Telling the two FTDIs apart up front is not always obvious; if the consoles come
+out swapped (the wrong guest on each pane, or the baremetal guest silent), just
+swap the `CVA6_UART` and `CVA6_UART2` values.
 
 ---
 
