@@ -4,9 +4,9 @@
  * Workshop scenario: two periodic tasks running as a Bao guest, plus a
  * UART RX interrupt handler that prints whenever a character is received.
  *
- * task_a and task_b fire every 1 s.  Both print their
- * name, the hart they are currently running on, and an iteration counter
- * so it is easy to verify they are scheduled independently.
+ * Both tasks run in user mode (K_USER): they fire every 1 s and print their
+ * name and an iteration counter so it is easy to verify they are scheduled
+ * independently.  printk() and k_msleep() reach the kernel via syscalls.
  */
 
 #include <zephyr/kernel.h>
@@ -14,7 +14,7 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/uart.h>
 
-#define STACK_SIZE 512
+#define STACK_SIZE 2048
 
 #define TASK_A_PERIOD_MS 1000
 #define TASK_B_PERIOD_MS 1000
@@ -46,6 +46,7 @@ static void uart_rx_handler(const struct device *dev, void *user_data)
 	}
 }
 
+/* Runs in user mode (VU): only printk()/k_msleep() syscalls, no kernel data. */
 static void periodic_task(void *name, void *period_ms, void *arg3)
 {
 	const char *task_name = name;
@@ -53,8 +54,7 @@ static void periodic_task(void *name, void *period_ms, void *arg3)
 	unsigned int iter = 0;
 
 	while (1) {
-		printk("[%s] cpu%u iter=%u\n",
-		       task_name, arch_curr_cpu()->id, iter++);
+		printk("[%s] iter=%u (user mode)\n", task_name, iter++);
 		k_msleep(period);
 	}
 }
@@ -69,12 +69,12 @@ int main(void)
 	k_thread_create(&task_a_data, task_a_stack,
 			K_THREAD_STACK_SIZEOF(task_a_stack),
 			periodic_task, "task_a", (void *)TASK_A_PERIOD_MS, NULL,
-			K_PRIO_PREEMPT(1), 0, K_NO_WAIT);
+			K_PRIO_PREEMPT(1), K_USER, K_NO_WAIT);
 
 	k_thread_create(&task_b_data, task_b_stack,
 			K_THREAD_STACK_SIZEOF(task_b_stack),
 			periodic_task, "task_b", (void *)TASK_B_PERIOD_MS, NULL,
-			K_PRIO_PREEMPT(2), 0, K_NO_WAIT);
+			K_PRIO_PREEMPT(2), K_USER, K_NO_WAIT);
 
 	return 0;
 }
