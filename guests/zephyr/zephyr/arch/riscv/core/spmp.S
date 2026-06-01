@@ -56,11 +56,11 @@ spmp_store:
 		li t2, (SISELECT_BASE + _index)
 		csrw CSR_SISELECT, t2
 
-		lhu t0, (_index * 2)(a2)
-		csrw CSR_SIREG2, t0
-
 		lr t0, (RV_REGSIZE * _index)(a3)
 		csrw CSR_SIREG, t0
+
+		lhu t0, (_index * 2)(a2)
+		csrw CSR_SIREG2, t0
 
 		li t0, _index + 1
 		beq t0, a1, spmpswitch_store
