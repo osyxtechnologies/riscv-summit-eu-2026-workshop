@@ -40,6 +40,40 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(mpu);
 
+#define CSR_SPMPEN  0x183
+#define CSR_SPMPENH 0x193
+
+static unsigned int spmp_slots;
+static unsigned int spmp_global_entries;
+/* Switch bits set during global init — vsiselect writes reset vspmpen on some
+ * hardware, so commit must restore global bits alongside per-thread bits. */
+static unsigned long global_spmp_switch[2];
+
+static unsigned int probe_spmp_slots(void)
+{
+	unsigned long saved = csr_read(CSR_SPMPEN);
+	unsigned long val;
+	unsigned int count;
+
+	csr_write(CSR_SPMPEN, ~0UL);
+	val = csr_read(CSR_SPMPEN);
+	csr_write(CSR_SPMPEN, saved);
+
+	count = (val == ~0UL) ? (8U * sizeof(unsigned long))
+			      : (unsigned int)__builtin_ctzl(~val);
+
+#ifndef CONFIG_64BIT
+	if (count == 32U) {
+		unsigned long saved_h = csr_read(CSR_SPMPENH);
+		csr_write(CSR_SPMPENH, ~0UL);
+		val = csr_read(CSR_SPMPENH);
+		csr_write(CSR_SPMPENH, saved_h);
+		count += (val == ~0UL) ? 32U : (unsigned int)__builtin_ctzl(~val);
+	}
+#endif
+
+	return MIN(count, CONFIG_SPMP_SLOTS);
+}
 
 #ifdef CONFIG_64BIT
 #define PR_ADDR "0x%016lx"
@@ -226,11 +260,11 @@ static void write_spmp_entries(unsigned int start, unsigned int end,
  * @brief Abstract the last 4 arguments to set_spmp_entry() and
  *        write_spmp_entries for u-mode.
  */
-#define SPMP_U_MODE(thread)                 \
-	thread->arch.u_mode_spmpaddr_regs,      \
-		thread->arch.u_mode_spmpcfg_regs,   \
-		thread->arch.u_mode_spmpswitch_reg, \
-		ARRAY_SIZE(thread->arch.u_mode_spmpaddr_regs)
+#define SPMP_U_MODE(thread)                  \
+	thread->arch.u_mode_pmpaddr_regs,        \
+		thread->arch.u_mode_pmpcfg_regs,     \
+		thread->arch.u_mode_spmpswitch_regs, \
+		ARRAY_SIZE(thread->arch.u_mode_pmpaddr_regs)
 
 /*
 * This is used to seed thread SPMP copies with global s-mode cfg entries
@@ -246,21 +280,20 @@ static unsigned int global_spmp_end_index;
  * @Brief Initialize the SPMP with global entries on each CPU
  */
 void z_riscv_spmp_init(void) {
+	spmp_slots = probe_spmp_slots();
+
 	unsigned long spmp_addr[CONFIG_SPMP_SLOTS];
 	uint16_t spmp_cfg[CONFIG_SPMP_SLOTS];
 	unsigned long spmp_switch[2] = {0, 0};
 	unsigned int index = 0;
 
-	/* Read-only area: Shared RX */
-	set_spmp_entry(&index, SPMP_SHARED | SPMP_L | SPMP_R | SPMP_X,
+	/* ROM: Shared-Region (SHARED+U, no L) — both VS and VU get R+X (§19.1.4).
+	 * No L: entry locks AFTER spmpen bit is activated (write cfg, run
+	 * spmpswitch_store, then lock — here we skip locking for simplicity).
+	 * VS-mode accesses general RAM via the allow-all (S-mode-only entry). */
+	set_spmp_entry(&index, SPMP_SHARED | SPMP_U | SPMP_R | SPMP_X,
 				(uintptr_t)__rom_region_start,
 				(size_t)__rom_region_size,
-				spmp_addr, spmp_cfg, spmp_switch, ARRAY_SIZE(spmp_addr));
-
-	/* Data region: Shared RW */
-	set_spmp_entry(&index, SPMP_SHARED | SPMP_L | SPMP_R | SPMP_W,
-				(uintptr_t)__kernel_ram_start,
-				(size_t)__kernel_ram_size,
 				spmp_addr, spmp_cfg, spmp_switch, ARRAY_SIZE(spmp_addr));
 
 #ifdef CONFIG_NULL_POINTER_EXCEPTION_DETECTION_SPMP
@@ -285,7 +318,24 @@ void z_riscv_spmp_init(void) {
 				spmp_addr, spmp_cfg, spmp_switch, ARRAY_SIZE(spmp_addr));
 #endif
 
+	/* spmpen bits must be activated BEFORE locking (§19.2: locked entry's
+	 * spmpen bit becomes read-only at its current value). */
 	write_spmp_entries(0, index, true, spmp_addr, spmp_cfg, spmp_switch, ARRAY_SIZE(spmp_addr));
+
+	/* Now lock global entries: cfg/addr become read-only, spmpen bit stays
+	 * at 1 (just activated above) so entry remains permanently active.
+	 * Write addr BEFORE cfg: on some hardware (e.g. CVA6) writing cfg
+	 * (vsireg2) clears addr (vsireg), so addr must be re-written first. */
+	for (unsigned int i = 0; i < index; i++) {
+		uint16_t cfg = spmp_cfg[i];
+
+		if (((cfg >> 3) & 0x3) != 0) {  /* A != OFF — active entry */
+			cfg |= SPMP_L;
+			csr_write(0x150, 0x100 + i);    /* vsiselect = entry i */
+			csr_write(0x151, spmp_addr[i]); /* vsireg    = addr (must come first) */
+			csr_write(0x152, cfg);          /* vsireg2   = cfg | L */
+		}
+	}
 
 #ifdef CONFIG_SMP
 #ifdef CONFIG_SPMP_STACK_GUARD
@@ -308,7 +358,9 @@ void z_riscv_spmp_init(void) {
 	global_spmp_cfg[0] = spmp_cfg[0];
 	global_spmp_last_addr = spmp_addr[index - 1];
 	global_spmp_end_index = index;
-
+	spmp_global_entries = index;
+	global_spmp_switch[0] = spmp_switch[0];
+	global_spmp_switch[1] = spmp_switch[1];
 }
 
 /**
@@ -388,7 +440,7 @@ void z_riscv_spmp_stackguard_enable(struct k_thread *thread) {
  */
 void z_riscv_spmp_usermode_init(struct k_thread *thread) {
 	/* Only indicate that the u-mode SPMP is not prepared yet */
-	thread->arch.u_mode_spmp_end_index = 0;
+	thread->arch.u_mode_pmp_end_index = 0;
 }
 
 /**
@@ -399,16 +451,13 @@ void z_riscv_spmp_usermode_init(struct k_thread *thread) {
 void z_riscv_spmp_usermode_prepare(struct k_thread *thread) {
 	unsigned int index = z_riscv_spmp_thread_init(SPMP_U_MODE(thread));
 
-	LOG_DBG("spmp_usermode_prepare for thread %p", thread);
-
-	/* Map the usermode stack */
 	set_spmp_entry(&index, SPMP_U | SPMP_R | SPMP_W,
 				thread->stack_info.start, thread->stack_info.size,
 				SPMP_U_MODE(thread));
 
-	thread->arch.u_mode_spmp_domain_offset = index;
-	thread->arch.u_mode_spmp_end_index = index;
-	thread->arch.u_mode_spmp_update_nr = 0;
+	thread->arch.u_mode_pmp_domain_offset = index;
+	thread->arch.u_mode_pmp_end_index = index;
+	thread->arch.u_mode_pmp_update_nr = 0;
 }
 
 /**
@@ -416,7 +465,7 @@ void z_riscv_spmp_usermode_prepare(struct k_thread *thread) {
  */
 static void resync_spmp_domain(struct k_thread *thread,
 							struct k_mem_domain *domain) {
-	unsigned int index = thread->arch.u_mode_spmp_domain_offset;
+	unsigned int index = thread->arch.u_mode_pmp_domain_offset;
 	int p_idx, remaining_partitions;
 	bool ok;
 
@@ -447,8 +496,8 @@ static void resync_spmp_domain(struct k_thread *thread,
 				remaining_partitions + 1, domain);
 	}
 
-	thread->arch.u_mode_spmp_end_index = index;
-	thread->arch.u_mode_spmp_update_nr = domain->arch.spmp_update_nr;
+	thread->arch.u_mode_pmp_end_index = index;
+	thread->arch.u_mode_pmp_update_nr = domain->arch.pmp_update_nr;
 
 	k_spin_unlock(&z_mem_domain_lock, key);
 }
@@ -461,26 +510,46 @@ static void resync_spmp_domain(struct k_thread *thread,
 void z_riscv_spmp_usermode_enable(struct k_thread *thread) {
 	struct k_mem_domain *domain = thread->mem_domain_info.mem_domain;
 
-	LOG_DBG("spmp_usermode_enable for thread %p with domain %p", thread, domain);
-
-	if (thread->arch.u_mode_spmp_end_index == 0) {
-		/* z_riscv_spmp_usermode_prepare() has not been called yet */
+	if (thread->arch.u_mode_pmp_end_index == 0) {
 		return;
 	}
 
-	if (thread->arch.u_mode_spmp_update_nr != domain->arch.spmp_update_nr) {
-		/*
-		* Resynchronize our SPMP entries with
-		* the latest domain partition information.
-		*/
+	/* write_spmp_entries() below enables this thread's U=1 user-stack vsPMP
+	 * entry and re-enables interrupts while we are still executing on that
+	 * stack (this runs on the context-switch path for a resuming user
+	 * thread).  Set SUM so a trap taken in that window can save/restore
+	 * context onto the now-U=1 stack; like arch_user_mode_enter() we leave
+	 * SUM set (the epilogue also loads from that stack, and the eventual
+	 * return-to-VU path in isr.S clears it). */
+	csr_set(sstatus, SSTATUS_SUM);
+
+	if (thread->arch.u_mode_pmp_update_nr != domain->arch.pmp_update_nr) {
 		resync_spmp_domain(thread, domain);
 	}
 
-	/* Write our u-mode SPMP entries */
-	write_spmp_entries(global_spmp_end_index, thread->arch.u_mode_spmp_end_index,
-					true /* must clear to the end */,
-					SPMP_U_MODE(thread));
+	unsigned long zero_sw[2] = { 0, 0 };
 
+	write_spmp_entries(global_spmp_end_index, thread->arch.u_mode_pmp_end_index,
+					true,
+					thread->arch.u_mode_pmpaddr_regs,
+					thread->arch.u_mode_pmpcfg_regs,
+					zero_sw,
+					ARRAY_SIZE(thread->arch.u_mode_pmpaddr_regs));
+}
+
+void z_riscv_spmp_usermode_commit(struct k_thread *thread)
+{
+	unsigned long sw0 = global_spmp_switch[0]
+			  | thread->arch.u_mode_spmpswitch_regs[0];
+
+	csr_write(CSR_SPMPEN, csr_read(CSR_SPMPEN) | sw0);
+
+#ifndef CONFIG_64BIT
+	unsigned long sw1 = global_spmp_switch[1]
+			  | thread->arch.u_mode_spmpswitch_regs[1];
+
+	csr_write(CSR_SPMPENH, csr_read(CSR_SPMPENH) | sw1);
+#endif
 }
 
 int arch_mem_domain_max_partitions_get(void) {
@@ -513,27 +582,27 @@ int arch_mem_domain_max_partitions_get(void) {
 }
 
 int arch_mem_domain_init(struct k_mem_domain *domain) {
-	domain->arch.spmp_update_nr = 0;
+	domain->arch.pmp_update_nr = 0;
 	return 0;
 }
 
 int arch_mem_domain_partition_add(struct k_mem_domain *domain,
 								uint32_t partition_id) {
 	/* Force resynchronization for every thread using this domain */
-	domain->arch.spmp_update_nr += 1;
+	domain->arch.pmp_update_nr += 1;
 	return 0;
 }
 
 int arch_mem_domain_partition_remove(struct k_mem_domain *domain,
 									uint32_t partition_id) {
 	/* Force resynchronization for every thread usinginit this domain */
-	domain->arch.spmp_update_nr += 1;
+	domain->arch.pmp_update_nr += 1;
 	return 0;
 }
 
 int arch_mem_domain_thread_add(struct k_thread *thread) {
 	/* Force resynchronization for this thread */
-	thread->arch.u_mode_spmp_update_nr = 0;
+	thread->arch.u_mode_pmp_update_nr = 0;
 	return 0;
 }
 
@@ -587,7 +656,7 @@ int arch_buffer_validate(const void *addr, size_t size, int write) {
 		}
 
 		/* partition matched: determine access result */
-		if ((part->attr.spmp_attr & (write ? SPMP_W : SPMP_R)) != 0) {
+		if ((part->attr.pmp_attr & (write ? SPMP_W : SPMP_R)) != 0) {
 			ret = 0;
 		}
 		break;

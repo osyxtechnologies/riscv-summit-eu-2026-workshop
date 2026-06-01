@@ -32,4 +32,8 @@ void pmp_decode_region(uint8_t cfg_byte, unsigned long *pmp_addr, unsigned int i
 		       unsigned long *start, unsigned long *end);
 #endif /* CONFIG_ZTEST */
 
+#ifdef CONFIG_RISCV_SPMP
+#include <spmp.h>
+#endif
+
 #endif /* PMP_H_ */

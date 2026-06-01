@@ -71,8 +71,14 @@ struct _thread_arch {
 #endif
 #ifdef CONFIG_USERSPACE
 	unsigned long priv_stack_start;
+#if defined(CONFIG_RISCV_SPMP)
+	unsigned long u_mode_spmpswitch_regs[2];
+	unsigned long u_mode_pmpaddr_regs[CONFIG_SPMP_SLOTS];
+	uint16_t u_mode_pmpcfg_regs[CONFIG_SPMP_SLOTS];
+#else
 	unsigned long u_mode_pmpaddr_regs[CONFIG_PMP_SLOTS];
 	unsigned long u_mode_pmpcfg_regs[CONFIG_PMP_SLOTS / (__riscv_xlen / 8)];
+#endif
 	unsigned int u_mode_pmp_domain_offset;
 	unsigned int u_mode_pmp_end_index;
 	unsigned int u_mode_pmp_update_nr;
