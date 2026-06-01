@@ -1,2 +1,5 @@
 build/
 .launch-error
+bao-hypervisor/bin
+bao-hypervisor/build
+docs/spmp-entry-usage-report.md
