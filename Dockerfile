@@ -8,7 +8,7 @@ ARG OPENOCD_REPO=https://github.com/riscv-collab/riscv-openocd.git
 ARG OPENOCD_REVISION=c8e7e3535
 # josecm/qemu @ spmp-hypervisor - SPMP-for-Hypervisor aware QEMU.
 ARG QEMU_REPO=https://github.com/josecm/qemu.git
-ARG QEMU_REVISION=ae4b0f46613108c922e9f0d3411faf94b714b0ee
+ARG QEMU_REVISION=f942c7d7f67175fbed6886af31df95758adbaa01
 
 # Install base dependencies. Includes:
 #   - toolchain unpack / repo cloning (git, curl, wget, xz-utils)
