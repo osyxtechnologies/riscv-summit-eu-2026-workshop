@@ -12,6 +12,7 @@
 #include <vm.h>
 #include <bit.h>
 #include <arch/instructions.h>
+#include <console.h>
 
 /**
  * This code assumes the SPMP switch extensions are implemented.
@@ -288,6 +289,16 @@ bool mpu_map(struct addr_space* as, struct mp_region* mem, bool locked)
 
     if (mem->size > 0 && spmp_perms_valid(&mem->mem_flags)) {
         mpid_t mpid = spmp_allocate_entry(spmp, mem, locked);
+        if (mpid == INVALID_MPID && locked) {
+            /* A locked region (hypervisor image / MMIO, always resident) could
+             * not get a free sPMP entry: this scenario does not fit in the
+             * sPMP entries this FPGA bitstream provides. */
+            ERROR("insufficient sPMP entries: this scenario does not fit in the "
+                  "%lu sPMP entries this FPGA bitstream provides.\n\r"
+                  "  >>> Expand the hardware: flash the next milestone's "
+                  "bitstream. <<<\n\r",
+                (unsigned long)SPMP_NUM_ENTRIES);
+        }
         if (mpid != INVALID_MPID) {
             failed = false;
 

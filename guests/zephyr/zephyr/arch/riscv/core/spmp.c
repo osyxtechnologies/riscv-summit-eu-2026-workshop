@@ -49,6 +49,13 @@ static unsigned int spmp_global_entries;
  * hardware, so commit must restore global bits alongside per-thread bits. */
 static unsigned long global_spmp_switch[2];
 
+/* WORKSHOP: set (to the needed slot count) when even the kernel's global
+ * vsPMP entries do not fit in this bitstream.  z_riscv_spmp_init() runs before
+ * the console is up, so it records this here and spmp_check_global_slots() (PRE_KERNEL_2)
+ * reports it where printk() actually works. */
+static unsigned int spmp_global_deficit;
+static void spmp_report_insufficient(const char *what, unsigned int needed);
+
 static unsigned int probe_spmp_slots(void)
 {
 	unsigned long saved = csr_read(CSR_SPMPEN);
@@ -74,6 +81,19 @@ static unsigned int probe_spmp_slots(void)
 
 	return MIN(count, CONFIG_SPMP_SLOTS);
 }
+
+static int spmp_check_global_slots(void)
+{
+	/* If global init found too few vsPMP slots, report it now (printk works
+	 * here, unlike in the very-early z_riscv_spmp_init()) and halt. */
+	if (spmp_global_deficit != 0U) {
+		spmp_report_insufficient("kernel global entries", spmp_global_deficit);
+	}
+
+	return 0;
+}
+SYS_INIT(spmp_check_global_slots, PRE_KERNEL_2, 0);
+
 
 #ifdef CONFIG_64BIT
 #define PR_ADDR "0x%016lx"
@@ -276,6 +296,36 @@ static unsigned long global_spmp_last_addr;
 /* End of global SPMP entry range */
 static unsigned int global_spmp_end_index;
 
+/*
+ * WORKSHOP capacity check.  `needed` is the number of vsPMP slots this guest
+ * wants to occupy (slots 0..needed-1).  The hypervisor (Bao) reserves the
+ * topmost slot (spmp_slots-1) for its S-mode allow-all default, so the guest
+ * is only safe while needed < spmp_slots.
+ *
+ * spmp_report_insufficient() prints and halts; only call it once printk() is
+ * usable (PRE_KERNEL_2 onwards, or from a running thread).
+ */
+static void spmp_report_insufficient(const char *what, unsigned int needed)
+{
+	printk("\n*** ZEPHYR ERROR: insufficient vsPMP entries (%s) ***\n"
+	       "  This guest needs %u vsPMP slots but the FPGA bitstream provides\n"
+	       "  only %u (the hypervisor reserves the top slot for its default).\n"
+	       "  >>> Expand the hardware: flash the next milestone's bitstream. <<<\n",
+	       what, needed, spmp_slots);
+
+	for (;;) {
+		/* halt: do not let the guest run with broken memory protection */
+	}
+}
+
+/* Late (post-console) capacity check: safe to report immediately. */
+static void spmp_require_slots(const char *what, unsigned int needed)
+{
+	if (needed >= spmp_slots) {
+		spmp_report_insufficient(what, needed);
+	}
+}
+
 /**
  * @Brief Initialize the SPMP with global entries on each CPU
  */
@@ -317,6 +367,19 @@ void z_riscv_spmp_init(void) {
 				Z_RISCV_STACK_GUARD_SIZE,
 				spmp_addr, spmp_cfg, spmp_switch, ARRAY_SIZE(spmp_addr));
 #endif
+
+	/* Capacity check BEFORE touching hardware.  On an undersized bitstream the
+	 * slots above spmp_slots do not exist; do NOT write to them.  This runs
+	 * before the console is up, so just record the deficit and let
+	 * spmp_check_global_slots() (PRE_KERNEL_2) report it where printk() works.  The
+	 * kernel keeps running on Bao's S-mode allow-all (top slot, untouched)
+	 * until that report halts it -- no user code runs in between. */
+	if (index >= spmp_slots) {
+		spmp_global_deficit = index;
+		spmp_global_entries = index;
+		global_spmp_end_index = index;
+		return;
+	}
 
 	/* spmpen bits must be activated BEFORE locking (§19.2: locked entry's
 	 * spmpen bit becomes read-only at its current value). */
@@ -454,6 +517,11 @@ void z_riscv_spmp_usermode_prepare(struct k_thread *thread) {
 	set_spmp_entry(&index, SPMP_U | SPMP_R | SPMP_W,
 				thread->stack_info.start, thread->stack_info.size,
 				SPMP_U_MODE(thread));
+
+	/* Global + per-user-thread entries must fit below Bao's reserved top
+	 * slot.  A user task is what pushes the count up, so this is where an
+	 * undersized bitstream is caught. */
+	spmp_require_slots("user-mode thread", index);
 
 	thread->arch.u_mode_pmp_domain_offset = index;
 	thread->arch.u_mode_pmp_end_index = index;
