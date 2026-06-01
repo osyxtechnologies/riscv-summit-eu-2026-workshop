@@ -21,8 +21,7 @@ typedef struct {
 
 void uart_init(void)
 {
-    uart8250_init(PLAT_UART_ADDR, VIRT_UART_SHIFTREG_ADDR,
-                  VIRT_UART_BAUDRATE, 0, 4);
+    uart8250_init(PLAT_UART_ADDR, 50000000, 115200, 0, 4);
 }
 
 void plat_led_init(void)

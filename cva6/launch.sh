@@ -13,8 +13,10 @@
 #   OPENOCD_PORT   GDB-server port        (default: 3333)
 #   OPENOCD_LOG    OpenOCD output stream  (default: /tmp/openocd.log)
 #   CVA6_UART      Primary CVA6 UART tty (default: /dev/ttyUSB0)
-#   CVA6_UART2     Secondary CVA6 UART tty (opens a 2nd minicom pane if set
-#                  and the device exists; used by milestone2 for UART1)
+#   CVA6_UART2     Secondary CVA6 UART tty (default: unset). When set and the
+#                  device exists, opens a 2nd minicom pane. The Makefile sets
+#                  it only for milestone2 (baremetal on UART1); m0/m1 run a
+#                  single console on UART0.
 
 set -euo pipefail
 
@@ -26,7 +28,7 @@ GDB="${GDB:-riscv32-unknown-elf-gdb}"
 OPENOCD_PORT="${OPENOCD_PORT:-3333}"
 OPENOCD_LOG="${OPENOCD_LOG:-/tmp/openocd.log}"
 CVA6_UART="${CVA6_UART:-/dev/ttyUSB0}"
-CVA6_UART2="${CVA6_UART2:-/dev/ttyUSB1}"
+CVA6_UART2="${CVA6_UART2:-}"
 
 gdb_script="${1:-$script_dir/baseline.gdb}"
 
@@ -133,10 +135,11 @@ if [ -n "$TMUX" ]; then
     trap cleanup EXIT INT TERM
 
     if [ -e "$CVA6_UART" ]; then
-        # UART1 - split to the LEFT (-b = before current pane) so UART0 stays
-        # on the right in the exec'd pane.
+        # UART1 - split to the RIGHT (no -b) so UART0 (OpenSBI + main guest)
+        # stays on the left in the exec'd pane and UART1 (baremetal) is on the
+        # right.
         if [ -n "$CVA6_UART2" ] && [ -e "$CVA6_UART2" ]; then
-            tmux split-window -h -b \
+            tmux split-window -h \
                 "clear; minicom -b 115200 -c on -o -D '$CVA6_UART2'; pkill -x minicom 2>/dev/null || true" || true
         fi
 

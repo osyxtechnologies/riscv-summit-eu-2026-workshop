@@ -111,17 +111,21 @@ int uart8250_init(unsigned long base, u32 in_freq, u32 baudrate, u32 reg_shift,
 	uart8250_in_freq   = in_freq;
 	uart8250_baudrate  = baudrate;
 
-	bdiv = uart8250_in_freq / (16 * uart8250_baudrate);
+    bdiv = (uart8250_in_freq + 8 * uart8250_baudrate) /
+            (16 * uart8250_baudrate);
 
 	/* Disable all interrupts */
 	set_reg(UART_IER_OFFSET, 0x00);
 	/* Enable DLAB */
 	set_reg(UART_LCR_OFFSET, 0x80);
-	// /* Set divisor low byte */
-	// set_reg(UART_DLL_OFFSET, bdiv & 0xff);
-	// /* Set divisor high byte */
-	// set_reg(UART_DLM_OFFSET, (bdiv >> 8) & 0xff);
-	/* 8 bits, no parity, one stop bit */
+
+	if (bdiv) {
+		/* Set divisor low byte */
+		set_reg(UART_DLL_OFFSET, bdiv & 0xff);
+		/* Set divisor high byte */
+		set_reg(UART_DLM_OFFSET, (bdiv >> 8) & 0xff);
+	}
+
 	set_reg(UART_LCR_OFFSET, 0x03);
 	/* Enable FIFO */
 	set_reg(UART_FCR_OFFSET, 0x01);

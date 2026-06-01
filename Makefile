@@ -325,11 +325,12 @@ ifeq ($(PLATFORM),qemu)
 run:
 	$(QEMU_INVOKE)
 else ifeq ($(PLATFORM),cva6)
-# launch.sh defaults CVA6_UART/CVA6_UART2 to /dev/ttyUSB0 and /dev/ttyUSB1
-# respectively, and skips the second minicom pane gracefully if UART1 is
-# not present. Override on the command line to retarget either device.
+# launch.sh runs a single console on UART0 (/dev/ttyUSB0) by default. Only
+# milestone2 has a second guest (baremetal on UART1), so CVA6_UART2 is passed
+# for milestone2 alone, which opens the second minicom pane. m0/m1 stay on a
+# single UART0 console. Override either device on the command line.
 run:
-	CVA6_UART=$(CVA6_UART) CVA6_UART2=$(CVA6_UART2) \
+	CVA6_UART=$(CVA6_UART) CVA6_UART2=$(if $(filter milestone2,$(CONFIG)),$(CVA6_UART2)) \
 		$(workshop_root)/cva6/launch.sh $(workshop_root)/cva6/$(CONFIG).gdb
 endif
 endif

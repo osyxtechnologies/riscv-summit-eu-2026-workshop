@@ -82,27 +82,13 @@ static int ariane_final_init(bool cold_boot)
  */
 static int ariane_console_init(void)
 {
-	int rc = 0;
 
-	rc = uart8250_init(ARIANE_UART_ADDR,
+	return uart8250_init(ARIANE_UART_ADDR,
 			     ARIANE_UART_FREQ,
 			     ARIANE_UART_BAUDRATE,
 			     ARIANE_UART_REG_SHIFT,
 			     ARIANE_UART_REG_WIDTH,
 			     ARIANE_UART_REG_OFFSET, true);
-	if (rc != 0)
-		return rc;
-	
-	rc = uart8250_init(ARIANE_UART2_ADDR,
-			     ARIANE_UART_FREQ,
-			     ARIANE_UART_BAUDRATE,
-			     ARIANE_UART_REG_SHIFT,
-			     ARIANE_UART_REG_WIDTH,
-			     ARIANE_UART_REG_OFFSET, false);
-	if (rc != 0)
-		return rc;
-
-	return 0;
 }
 
 /*
