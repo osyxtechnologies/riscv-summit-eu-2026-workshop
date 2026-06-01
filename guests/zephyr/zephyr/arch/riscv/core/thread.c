@@ -203,8 +203,22 @@ FUNC_NORETURN void arch_user_mode_enter(k_thread_entry_t user_entry,
 	z_riscv_spmp_usermode_enable(_current);
 #endif
 
-	/* preserve stack pointer for next exception entry */
 	arch_curr_cpu()->arch.user_exc_sp = top_of_priv_stack;
+
+#if defined(CONFIG_RISCV_SPMP)
+	z_riscv_spmp_usermode_commit(_current);
+#endif
+
+	/* z_riscv_spmp_usermode_commit() (above) enabled this thread's U=1
+	 * user-stack vsPMP entry.  From here on, the kernel's remaining accesses
+	 * to the thread's stack/TLS -- the is_user_mode store, the user_entry/arg
+	 * loads, and the sret trampoline below -- are S-mode accesses to U=1
+	 * memory and require SUM (sPMP U-mode rule; cf. the isr.S trap path).
+	 * Leave SUM set through the sret: VU ignores SUM, and the next trap/return
+	 * re-establishes it via isr.S. */
+#if defined(CONFIG_RISCV_SPMP)
+	csr_set(sstatus, SSTATUS_SUM);
+#endif
 
 	is_user_mode = true;
 

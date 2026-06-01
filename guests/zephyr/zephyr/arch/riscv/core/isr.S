@@ -196,9 +196,11 @@ SECTION_FUNC(exception.entry, _isr_wrapper)
 	 * later but it is safe to store our saved user sp here. */
 	sr t0, (-__struct_arch_esf_SIZEOF + __struct_arch_esf_sp_OFFSET)(sp)
 
+#ifdef CONFIG_THREAD_LOCAL_STORAGE
 	/* Make sure tls pointer is sane */
 	lr t0, ___cpu_t_current_OFFSET(s0)
 	lr tp, _thread_offset_to_tls(t0)
+#endif
 
 	/* Make sure global pointer is sane */
 #ifdef CONFIG_RISCV_GP
@@ -210,10 +212,17 @@ SECTION_FUNC(exception.entry, _isr_wrapper)
 	lr gp, ___cpu_t_current_OFFSET(s0)
 #endif /* CONFIG_RISCV_GP / CONFIG_RISCV_CURRENT_VIA_GP */
 
-	/* Clear our per-thread usermode flag */
+	/* Clear our per-thread usermode flag.
+	 * Set SUM=1 here and keep it set for the duration of this trap.
+	 * With SPMP UMODE entries (S=0 U=1), S-mode needs SUM=1 to access user
+	 * memory (e.g. the k_str_out buffer on the user stack).  We clear SUM
+	 * only on the return path, just before sret to VU-mode (line below). */
+	li t0, SSTATUS_SUM
+	csrs sstatus, t0
 	lui t0, %tprel_hi(is_user_mode)
 	add t0, t0, tp, %tprel_add(is_user_mode)
 	sb zero, %tprel_lo(is_user_mode)(t0)
+	/* SUM stays 1 — cleared only at return-to-VU-mode below. */
 1:
 	/* retrieve original t0/t1 values */
 	lr t0, _curr_cpu_arch_user_exc_tmp0(s0)
@@ -867,11 +876,15 @@ fp_trap_exit:
 	call z_riscv_custom_stack_guard_disable
 #endif /* CONFIG_CUSTOM_STACK_GUARD */
 
-	/* Set our per-thread usermode flag */
+	/* Set our per-thread usermode flag (SUM=1 for U-mode TLS region access). */
+	li t0, SSTATUS_SUM
+	csrs sstatus, t0
 	li t1, 1
 	lui t0, %tprel_hi(is_user_mode)
 	add t0, t0, tp, %tprel_add(is_user_mode)
 	sb t1, %tprel_lo(is_user_mode)(t0)
+	li t0, SSTATUS_SUM
+	csrc sstatus, t0
 
 	/* preserve stack pointer for next exception entry */
 	add t0, sp, __struct_arch_esf_SIZEOF
