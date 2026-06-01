@@ -507,34 +507,63 @@ static void resync_spmp_domain(struct k_thread *thread,
  *
  * This is called on every context switch.
  */
+/* Per-thread (U=1) switch bits currently enabled in spmpen, so the next
+ * context switch can clear exactly those and leave every other bit alone
+ * (uniprocessor guest). */
+static unsigned long active_user_sw[2];
+
 void z_riscv_spmp_usermode_enable(struct k_thread *thread) {
 	struct k_mem_domain *domain = thread->mem_domain_info.mem_domain;
+	unsigned long new_sw0 = 0;
+#ifndef CONFIG_64BIT
+	unsigned long new_sw1 = 0;
+#endif
 
-	if (thread->arch.u_mode_pmp_end_index == 0) {
-		return;
+	if (thread->arch.u_mode_pmp_end_index != 0) {
+		/* write_spmp_entries() below enables this thread's U=1 user-stack
+		 * vsPMP entry and re-enables interrupts while we are still executing
+		 * on that stack (this runs on the context-switch path for a resuming
+		 * user thread).  Set SUM so a trap taken in that window can
+		 * save/restore context onto the now-U=1 stack; like
+		 * arch_user_mode_enter() we leave SUM set (the epilogue also loads
+		 * from that stack, and the eventual return-to-VU path in isr.S clears
+		 * it). */
+		csr_set(sstatus, SSTATUS_SUM);
+
+		if (thread->arch.u_mode_pmp_update_nr != domain->arch.pmp_update_nr) {
+			resync_spmp_domain(thread, domain);
+		}
+
+		unsigned long zero_sw[2] = { 0, 0 };
+
+		write_spmp_entries(global_spmp_end_index, thread->arch.u_mode_pmp_end_index,
+						true,
+						thread->arch.u_mode_pmpaddr_regs,
+						thread->arch.u_mode_pmpcfg_regs,
+						zero_sw,
+						ARRAY_SIZE(thread->arch.u_mode_pmpaddr_regs));
+
+		new_sw0 = thread->arch.u_mode_spmpswitch_regs[0];
+#ifndef CONFIG_64BIT
+		new_sw1 = thread->arch.u_mode_spmpswitch_regs[1];
+#endif
 	}
 
-	/* write_spmp_entries() below enables this thread's U=1 user-stack vsPMP
-	 * entry and re-enables interrupts while we are still executing on that
-	 * stack (this runs on the context-switch path for a resuming user
-	 * thread).  Set SUM so a trap taken in that window can save/restore
-	 * context onto the now-U=1 stack; like arch_user_mode_enter() we leave
-	 * SUM set (the epilogue also loads from that stack, and the eventual
-	 * return-to-VU path in isr.S clears it). */
-	csr_set(sstatus, SSTATUS_SUM);
-
-	if (thread->arch.u_mode_pmp_update_nr != domain->arch.pmp_update_nr) {
-		resync_spmp_domain(thread, domain);
-	}
-
-	unsigned long zero_sw[2] = { 0, 0 };
-
-	write_spmp_entries(global_spmp_end_index, thread->arch.u_mode_pmp_end_index,
-					true,
-					thread->arch.u_mode_pmpaddr_regs,
-					thread->arch.u_mode_pmpcfg_regs,
-					zero_sw,
-					ARRAY_SIZE(thread->arch.u_mode_pmpaddr_regs));
+	/* Enable exactly this thread's per-thread entries: clear the bits a
+	 * previously-running user thread left enabled and OR in this thread's,
+	 * touching nothing else.  A full spmpen overwrite would also clear the
+	 * global and hypervisor/boot-reserved enable bits (not tracked here),
+	 * which removes the guest's S-mode access and hangs the guest on CVA6.
+	 *
+	 * Until a user thread has run, active_user_sw is 0, so this is a no-op. */
+	csr_write(CSR_SPMPEN,
+			(csr_read(CSR_SPMPEN) & ~active_user_sw[0]) | new_sw0);
+	active_user_sw[0] = new_sw0;
+#ifndef CONFIG_64BIT
+	csr_write(CSR_SPMPENH,
+			(csr_read(CSR_SPMPENH) & ~active_user_sw[1]) | new_sw1);
+	active_user_sw[1] = new_sw1;
+#endif
 }
 
 void z_riscv_spmp_usermode_commit(struct k_thread *thread)

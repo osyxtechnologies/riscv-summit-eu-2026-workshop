@@ -97,6 +97,20 @@ SECTION_FUNC(TEXT, z_riscv_switch)
 	call z_riscv_pmp_kernelmode_enable
 	mv a0, s0
 #elif defined(CONFIG_USERSPACE)
+#if defined(CONFIG_RISCV_SPMP)
+	/*
+	 * Unlike PMP, sPMP entries restrict S-mode access too, so the incoming
+	 * thread's sPMP view must be re-established on every switch, including
+	 * kernel threads: a previous user thread's U=1 entries would otherwise
+	 * stay enabled and deny VS-mode kernel accesses to that region (e.g.
+	 * k_thread_create() filling a recycled user stack).
+	 * z_riscv_spmp_usermode_enable() handles both via a read-modify-write
+	 * that only toggles this guest's own per-thread enable bits.
+	 */
+	mv s0, a0
+	call z_riscv_spmp_usermode_enable
+	mv a0, s0
+#else
 	/*
 	 * When kernel mode dynamic configuration is not enabled, we need to
 	 * configure the PMP only at context switch time as the PMP is not
@@ -107,13 +121,10 @@ SECTION_FUNC(TEXT, z_riscv_switch)
 	andi t0, t0, K_USER
 	beqz t0, not_user_task
 	mv s0, a0
-#if defined(CONFIG_RISCV_PMP)
 	call z_riscv_pmp_usermode_enable
-#elif defined(CONFIG_RISCV_SPMP)
-	call z_riscv_spmp_usermode_enable
-#endif
 	mv a0, s0
 not_user_task:
+#endif
 #endif
 
 #if CONFIG_INSTRUMENT_THREAD_SWITCHING
