@@ -60,6 +60,42 @@ SHELL_CMD_REGISTER(usermode, NULL,
 		   "Spawn a task that runs in user (VU) mode behind the vsPMP",
 		   cmd_usermode);
 
+/*
+ * `led on` / `led off` / `led blink` are convenience aliases for
+ * `baoipc write_notify 0 "led <state>"`: they just re-run that existing
+ * IPC-shmem command, which writes the string to the channel and notifies the
+ * baremetal guest (milestone 2), whose led_cmd_run() matches "led on/off/blink".
+ */
+static int cmd_led_on(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+	return shell_execute_cmd(sh, "baoipc write_notify 0 \"led on\"");
+}
+
+static int cmd_led_off(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+	return shell_execute_cmd(sh, "baoipc write_notify 0 \"led off\"");
+}
+
+static int cmd_led_blink(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+	return shell_execute_cmd(sh, "baoipc write_notify 0 \"led blink\"");
+}
+
+SHELL_STATIC_SUBCMD_SET_CREATE(sub_led_cmds,
+	SHELL_CMD(on,    NULL, "Turn the baremetal-guest LED on",  cmd_led_on),
+	SHELL_CMD(off,   NULL, "Turn the baremetal-guest LED off", cmd_led_off),
+	SHELL_CMD(blink, NULL, "Blink the baremetal-guest LED",    cmd_led_blink),
+	SHELL_SUBCMD_SET_END
+);
+SHELL_CMD_REGISTER(led, &sub_led_cmds,
+		   "Control the baremetal guest's LED over IPC shmem", NULL);
+
 int main(void)
 {
 	/* Shell is started automatically by Zephyr. */
