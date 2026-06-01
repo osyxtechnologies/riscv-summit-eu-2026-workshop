@@ -72,7 +72,7 @@ _run_min_cols  := 100
 _run_min_lines := 24
 
 ifneq ($(filter run,$(MAKECMDGOALS)),)
-run:
+run: | build
 	@$(_image_check)
 	@rm -f $(_launch_error)
 	$(_docker_run) bash -c '\
