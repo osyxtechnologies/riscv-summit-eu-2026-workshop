@@ -3,3 +3,7 @@ build/
 bao-hypervisor/bin
 bao-hypervisor/build
 docs/spmp-entry-usage-report.md
+
+# Python bytecode caches (regenerated from .py; never source)
+__pycache__/
+*.pyc
