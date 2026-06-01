@@ -8,7 +8,7 @@ ARG OPENOCD_REPO=https://github.com/riscv-collab/riscv-openocd.git
 ARG OPENOCD_REVISION=c8e7e3535
 # josecm/qemu @ spmp-hypervisor - SPMP-for-Hypervisor aware QEMU.
 ARG QEMU_REPO=https://github.com/josecm/qemu.git
-ARG QEMU_REVISION=e369880a52778a529b323a7d365f2a1bb8f54bd3
+ARG QEMU_REVISION=ae4b0f46613108c922e9f0d3411faf94b714b0ee
 
 # Install base dependencies. Includes:
 #   - toolchain unpack / repo cloning (git, curl, wget, xz-utils)
@@ -51,7 +51,8 @@ RUN apt-get install -y \
         tmux \
         minicom \
         openfpgaloader \
-        libpython3.10
+        libpython3.10 \
+        gperf
 
 # Python packages used at Zephyr cmake/build time (we drive cmake/ninja
 # directly, no west). --break-system-packages is needed on Ubuntu 24.04
