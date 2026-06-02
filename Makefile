@@ -273,8 +273,8 @@ help:
 	@echo ""
 	@echo "FPGA target (CVA6 / Genesys 2 only):"
 	@echo "  make flash CONFIG=<c>"
-	@echo "       Program the Genesys 2 SPI flash with the pre-built .mcs bitstream"
-	@echo "       for <c> via openFPGALoader (runs inside the workshop container)."
+	@echo "       Load the pre-built .bit bitstream for <c> directly into the Genesys 2"
+	@echo "       FPGA via openFPGALoader (volatile; press RESET, not PROG, between runs)."
 	@echo ""
 	@echo "Utility targets (no PLATFORM/CONFIG needed):"
 	@echo "  make pull-image    Fetch the pre-built image from Docker Hub (recommended)."
@@ -294,8 +294,10 @@ help:
 	@echo "  make run   PLATFORM=qemu CONFIG=milestone2 SOLUTIONS=1"
 	@echo "  make run   PLATFORM=cva6 CONFIG=milestone1"
 
-# Program the Genesys 2 SPI flash with the pre-built .mcs bitstream for CONFIG.
-# Runs on the host (not inside Docker) using openFPGALoader.
+# Load the pre-built .bit bitstream for CONFIG directly into the Genesys 2 FPGA
+# (volatile SRAM config). The JTAG clock must be 5 MHz: at openFPGALoader's
+# default 6 MHz the config bits are corrupted and DONE never asserts. Runs on
+# the host using openFPGALoader.
 flash:
 	@[ -n "$(CONFIG)" ] || { \
 		echo "ERROR: CONFIG is required."; \
@@ -310,9 +312,10 @@ flash:
 		echo "ERROR: openFPGALoader not found. Rebuild the workshop image: make build-image"; \
 		exit 1; \
 	}
-	@echo "[flash] Programming Genesys 2 SPI flash with $(CONFIG) bitstream (~2 min)..."
-	openFPGALoader -b genesys2 $(workshop_root)/cva6/bitstreams/$(CONFIG)/ariane_xilinx.mcs
-	@echo "[flash] Done. Power-cycle the board or press the PROG button to boot from flash."
+	@echo "[flash] Loading $(CONFIG) bitstream directly into the Genesys 2 FPGA (volatile)..."
+	openFPGALoader -b genesys2 --freq 5000000 $(workshop_root)/cva6/bitstreams/$(CONFIG)/ariane_xilinx.bit
+	@echo "[flash] Done. The bitstream is live. Press RESET between runs, then 'make run'."
+	@echo "[flash] Do NOT power-cycle or press PROG: both revert to the SPI-flash (milestone0) bitstream."
 
 # Build every guest applicable to the active CONFIG, then Bao + OpenSBI.
 build: $(if $(ZEPHYR_APP),build-zephyr) $(if $(BAREMETAL_APP),build-baremetal) build-opensbi
