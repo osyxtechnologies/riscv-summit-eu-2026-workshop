@@ -2,7 +2,7 @@ build/
 .launch-error
 bao-hypervisor/bin
 bao-hypervisor/build
-docs/spmp-entry-usage-report.md
+docs/
 
 # Python bytecode caches (regenerated from .py; never source)
 __pycache__/
