@@ -1,17 +1,10 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
  *
- * Exercise 00 -- single baremetal guest on QEMU.
+ * Workshop scenario 00 -- single baremetal guest on QEMU.
  *
- * Goal: configure Bao to boot a single baremetal VM with UART0 access.
- * The baremetal app prints from a timer handler and echoes UART RX IRQs.
- *
- * Memory map reference (QEMU virt, riscv32):
- *   RAM start:       0x80000000
- *   Baremetal image: 0x84200000  (16 MiB region)
- *   UART0 (NS16550): 0x10000000  APLIC source 10
- *   APLIC:           0x0d000000
- *   IMSIC:           0x28000000
+ * One VM at 0x84200000 (16 MiB) running the baremetal app on UART0
+ * (0x10000000, APLIC source 10). No IPC, no second guest.
  */
 
 #include <config.h>
@@ -21,12 +14,9 @@ struct config config = {
     .vmlist_size = 1,
     .vmlist = (struct vm_config[]) {
         {
-            /* TODO: load address, image base, image size.
-             * VM_IMAGE_LOADED(load_addr, base, size) */
-            .image = VM_IMAGE_LOADED(/* TODO */, /* TODO */, /* TODO */),
+            .image = VM_IMAGE_LOADED(0x84200000, 0x84200000, 0x1000000),
 
-            /* TODO: VM entry point address */
-            .entry = /* TODO */,
+            .entry = 0x84200000,
 
             .platform = {
                 .cpu_num = 1,
@@ -34,29 +24,25 @@ struct config config = {
                 .region_num = 1,
                 .regions = (struct vm_mem_region[]) {
                     {
-                        /* TODO: base address and size of the VM's RAM region */
-                        .base = /* TODO */,
-                        .size = /* TODO */,
+                        .base = 0x84200000,
+                        .size = 0x1000000,
                     },
                 },
 
                 .dev_num = 1,
                 .devs = (struct vm_dev_region[]) {
                     {
-                        /* TODO: UART0 physical and virtual address */
-                        .pa   = /* TODO */,
-                        .va   = /* TODO */,
+                        .pa = 0x10000000,
+                        .va = 0x10000000,
                         .size = 0x1000,
                         .interrupt_num = 1,
-                        /* TODO: APLIC source number for UART0 */
-                        .interrupts = (irqid_t[]) {/* TODO */}
+                        .interrupts = (irqid_t[]) {10}
                     },
                 },
 
                 .arch = {
-                    /* TODO: APLIC and IMSIC base addresses */
-                    .irqc.aia.aplic.base = /* TODO */,
-                    .irqc.aia.imsic.base = /* TODO */,
+                    .irqc.aia.aplic.base = 0xd000000,
+                    .irqc.aia.imsic.base = 0x28000000,
                 },
             },
         },
