@@ -135,8 +135,8 @@ board it has been assigned to.
 > the hardware.
 
 > **Board buttons - quick reference:**
-> - **Power-on / after `make flash`:** press the **PROG** button (bottom-left of the board) to load the CVA6 bitstream from SPI flash into the FPGA.
-> - **Between `make run` invocations:** press the **RESET** button to put the CVA6 core back in a clean reset state before GDB loads the next image over JTAG.
+> - **RESET** (the one you use): press between `make run` invocations to put the CVA6 core back in a clean reset state before GDB loads the next image over JTAG. `make flash` loads the bitstream straight into the FPGA, so RESET is all you need.
+> - **PROG / power-cycle:** reloads the bitstream from **SPI flash** (the persistent image, e.g. the pre-flashed milestone 0), discarding whatever `make flash` loaded. Only relevant after `make flash CONFIG=<m> ROM=1`.
 
 ---
 
@@ -290,8 +290,8 @@ and `.mcs` files are checked into `cva6/bitstreams/<milestone>/`.
 ### Programming with `make flash`
 
 openFPGALoader is included in the workshop Docker image, so no host
-installation is needed. Program the SPI flash for the desired milestone
-(≈ 2 min):
+installation is needed. `make flash` loads the desired milestone's bitstream
+**directly into the FPGA** over JTAG (volatile, a few seconds):
 
 ```bash
 make flash CONFIG=milestone0
@@ -299,14 +299,21 @@ make flash CONFIG=milestone1
 make flash CONFIG=milestone2
 ```
 
-openFPGALoader writes the `.mcs` image to the Genesys 2's on-board SPI
-flash. After programming, **power-cycle the board** (or press the **PROG**
-button) to boot the new bitstream. Confirm the green **DONE** LED on the
-board is lit - that signals the FPGA has successfully configured from
-flash; if it stays off, the bitstream did not load.
+The bitstream is live immediately: the green **DONE** LED lights and the CVA6
+is configured. Press **RESET** (not PROG) before `make run`. The load is
+**volatile**, so a power-cycle or PROG reloads the persistent SPI-flash image
+instead; just re-run `make flash` to switch milestones.
 
-> If the FTDI adapter is not found, make sure no other process (e.g. OpenOCD
-> from a previous `make run`) is holding the USB device open.
+To instead update the **persistent SPI-flash** image (the one that boots on
+power-on / PROG, ≈ 2 min), add `ROM=1`:
+
+```bash
+make flash CONFIG=milestone0 ROM=1
+```
+
+> If `make flash` reports success but the **DONE** LED stays off, the FPGA did
+> not configure. Also make sure no other process (e.g. OpenOCD from a previous
+> `make run`) is holding the FTDI/USB device open.
 
 ---
 
@@ -365,7 +372,7 @@ To exit QEMU type **`Ctrl-A x`** in the main console.
 ### Build & run on CVA6 (Genesys 2)
 
 > **Before each run:** press the board's **RESET** button to put the CVA6 core in a clean state.
-> After flashing a new bitstream (or on power-on), press **PROG** first to load it from SPI flash.
+> `make flash` loads the bitstream straight into the FPGA, so RESET is all you need (do not press PROG, which reloads the SPI-flash image instead).
 
 ```bash
 make build CONFIG=milestone1   # compile guests + Bao + OpenSBI
@@ -556,9 +563,9 @@ under QEMU instead, export `PLATFORM=qemu` and edit the matching skeletons under
    ```bash
    make flash CONFIG=milestone1
    ```
-   This takes about 2 minutes; skip it if an assistant has already flashed
-   the board. Press **PROG** after flashing and press **RESET** before
-   `make run`.
+   This loads the bitstream into the FPGA in a few seconds; skip it if an
+   assistant has already loaded it. Press **RESET** before `make run`
+   (not PROG).
 
    Build and run:
    ```bash
@@ -611,9 +618,9 @@ under QEMU instead, export `PLATFORM=qemu` and edit the matching skeletons under
    ```bash
    make flash CONFIG=milestone2
    ```
-   This takes about 2 minutes; skip it if an assistant has already flashed
-   the board. Press **PROG** after flashing and press **RESET** before
-   `make run`.
+   This loads the bitstream into the FPGA in a few seconds; skip it if an
+   assistant has already loaded it. Press **RESET** before `make run`
+   (not PROG).
 
    Build and run:
    ```bash
@@ -660,7 +667,7 @@ make pull-image                          Fetch the pre-built image from Docker H
 make build-image                         Build the workshop Docker image from source (~15 min).
 make push-image                          Push the locally-built image to Docker Hub (maintainers only).
 make shell                               Open a tmux session inside the container.
-make flash CONFIG=<c>                    Program Genesys 2 SPI flash with milestone bitstream.
+make flash CONFIG=<c>                    Load milestone bitstream into the CVA6 FPGA (ROM=1: write SPI flash).
 
 make build PLATFORM=<p> CONFIG=<c>       Compile everything for the scenario.
 make run   PLATFORM=<p> CONFIG=<c>       Build + boot under QEMU or on CVA6.

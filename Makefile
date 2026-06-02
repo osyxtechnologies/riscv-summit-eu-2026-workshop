@@ -31,7 +31,7 @@ ifneq ($(_dispatched_goals),)
 _in_dispatch := 1
 
 # Forward command-line overrides into the in-container make invocation.
-_fwd_vars := PLATFORM CONFIG SOLUTIONS CVA6_UART CVA6_UART2 CROSS_COMPILE WORKSHOP_IMAGE
+_fwd_vars := PLATFORM CONFIG SOLUTIONS CVA6_UART CVA6_UART2 CROSS_COMPILE WORKSHOP_IMAGE ROM
 _fwd_args := $(foreach v,$(_fwd_vars),$(if $($(v)),$(v)=$($(v))))
 
 .PHONY: $(_dispatched_goals)
@@ -274,7 +274,8 @@ help:
 	@echo "FPGA target (CVA6 / Genesys 2 only):"
 	@echo "  make flash CONFIG=<c>"
 	@echo "       Load the pre-built .bit bitstream for <c> directly into the Genesys 2"
-	@echo "       FPGA via openFPGALoader (volatile; press RESET, not PROG, between runs)."
+	@echo "       FPGA (volatile; press RESET, not PROG, between runs)."
+	@echo "       Add ROM=1 to instead write the .mcs to SPI flash (persistent)."
 	@echo ""
 	@echo "Utility targets (no PLATFORM/CONFIG needed):"
 	@echo "  make pull-image    Fetch the pre-built image from Docker Hub (recommended)."
@@ -294,10 +295,10 @@ help:
 	@echo "  make run   PLATFORM=qemu CONFIG=milestone2 SOLUTIONS=1"
 	@echo "  make run   PLATFORM=cva6 CONFIG=milestone1"
 
-# Load the pre-built .bit bitstream for CONFIG directly into the Genesys 2 FPGA
-# (volatile SRAM config). The JTAG clock must be 5 MHz: at openFPGALoader's
-# default 6 MHz the config bits are corrupted and DONE never asserts. Runs on
-# the host using openFPGALoader.
+# Load the pre-built .bit for CONFIG directly into the Genesys 2 FPGA over JTAG
+# (volatile, fast). With ROM=1, instead write the .mcs to SPI flash (persistent;
+# boots on PROG/power-on, ~2 min). The JTAG clock must be 5 MHz: at the default
+# 6 MHz the SRAM config is corrupted and DONE never asserts.
 flash:
 	@[ -n "$(CONFIG)" ] || { \
 		echo "ERROR: CONFIG is required."; \
@@ -312,10 +313,16 @@ flash:
 		echo "ERROR: openFPGALoader not found. Rebuild the workshop image: make build-image"; \
 		exit 1; \
 	}
+ifdef ROM
+	@echo "[flash] Writing $(CONFIG) bitstream to the Genesys 2 SPI flash (persistent, ~2 min)..."
+	openFPGALoader -b genesys2 --freq 5000000 $(workshop_root)/cva6/bitstreams/$(CONFIG)/ariane_xilinx.mcs
+	@echo "[flash] Done. Power-cycle the board or press PROG to boot the new SPI-flash image."
+else
 	@echo "[flash] Loading $(CONFIG) bitstream directly into the Genesys 2 FPGA (volatile)..."
 	openFPGALoader -b genesys2 --freq 5000000 $(workshop_root)/cva6/bitstreams/$(CONFIG)/ariane_xilinx.bit
 	@echo "[flash] Done. The bitstream is live. Press RESET between runs, then 'make run'."
-	@echo "[flash] Do NOT power-cycle or press PROG: both revert to the SPI-flash (milestone0) bitstream."
+	@echo "[flash] Do NOT power-cycle or press PROG: both revert to the SPI-flash image (use ROM=1 to update it)."
+endif
 
 # Build every guest applicable to the active CONFIG, then Bao + OpenSBI.
 build: $(if $(ZEPHYR_APP),build-zephyr) $(if $(BAREMETAL_APP),build-baremetal) build-opensbi
