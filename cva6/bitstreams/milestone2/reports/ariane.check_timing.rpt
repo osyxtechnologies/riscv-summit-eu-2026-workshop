@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
-| Date         : Tue May 19 14:39:27 2026
+| Date         : Tue Jun  2 10:41:22 2026
 | Host         : manuale97-Prestige-15-A12UC running 64-bit Ubuntu 22.04.5 LTS
 | Command      : check_timing -file reports/ariane.check_timing.rpt
 | Design       : ariane_xilinx
@@ -14,7 +14,7 @@ check_timing report
 
 Table of Contents
 -----------------
-1. checking no_clock (4212)
+1. checking no_clock (4185)
 2. checking constant_clock (0)
 3. checking pulse_width_clock (0)
 4. checking unconstrained_internal_endpoints (27)
@@ -27,13 +27,13 @@ Table of Contents
 11. checking partial_output_delay (0)
 12. checking latch_loops (0)
 
-1. checking no_clock (4212)
+1. checking no_clock (4185)
 ---------------------------
  There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/mstatus_q_reg[fs][0]/Q (HIGH)
 
  There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/mstatus_q_reg[fs][1]/Q (HIGH)
 
- There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/v_q_reg_rep/Q (HIGH)
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/v_q_reg/Q (HIGH)
 
  There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/csr_regfile_i/vsstatus_q_reg[fs][0]/Q (HIGH)
 
@@ -337,9 +337,7 @@ Table of Contents
 
  There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_pc_q_with_c.idx_ds_q_reg[0]/Q (HIGH)
 
- There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_pc_q_with_c.idx_ds_q_reg[1]_rep/Q (HIGH)
-
- There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_pc_q_with_c.idx_ds_q_reg[1]_rep__0/Q (HIGH)
+ There are 27 register/latch pins with no clock driven by root clock pin: i_ariane/i_cva6/i_frontend/i_instr_queue/gen_pc_q_with_c.idx_ds_q_reg[1]/Q (HIGH)
 
 
 2. checking constant_clock (0)
