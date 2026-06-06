@@ -558,30 +558,39 @@ under QEMU instead, export `PLATFORM=qemu` and edit the matching skeletons under
    - memory region
    - UART0 device passthrough
    - AIA base addresses
-2. For CVA6, flash the matching bitstream if the board is not already
-   programmed:
-   ```bash
-   make flash CONFIG=milestone1
-   ```
-   This loads the bitstream into the FPGA in a few seconds; skip it if an
-   assistant has already loaded it. Press **RESET** before `make run`
-   (not PROG).
-
-   Build and run:
+2. Build and run:
    ```bash
    make build CONFIG=milestone1
    make run   CONFIG=milestone1
    ```
-3. You should see Zephyr's `dual-task` app booting on UART0:
+3. The expected result should be Zephyr's `dual-task` app booting on UART0:
    ```
    *** Booting Zephyr OS build ...
    Zephyr dual-task demo (board: baovm_cva6-spmp/cv32a6)
    [task_a] cpu0 iter=0
    [task_b] cpu0 iter=0
    ```
+   However, if you are using the CVA6, the result may be a **Zephyr error** stating that the current hardware has not enough SPMP entries. If you're using QEMU, you have reached the end of milestone 1.
+   ```
+   *** ZEPHYR ERROR: insufficient vSPMP entries (kernel global entries) ***
+   This guest needs 2 vSPMP slots but the FPGA bitstream provides
+   only 0 (the hypervisor reserves the top slot for its default).
+   >>> Expand the hardware: flash the next milestone's bitstream. <<<
+   ```
+4. The Zephyr guest enforces inter-task isolation using the virtual SPMP (vSPMP). Flash the milestone-1 bitstream, which features 8 vSPMP entries for guest usage:
+   ```bash
+   make flash CONFIG=milestone1
+   ```
+   This loads the bitstream into the FPGA in a few seconds; skip it if an
+   assistant has already loaded it. Press **RESET** before `make run`
+   (not PROG).
+5. Now load and run the milestone-1 binaries again. Zephyr should boot on UART0 as expected. 
+   ```bash
+   make run   CONFIG=milestone1
+   ```
    Checkpoint: one Zephyr guest is running on UART0. Under QEMU, exit with
    **Ctrl-A x** in the main console when you are done observing it.
-4. If stuck, append `SOLUTIONS=1` to both commands to peek at the
+6. If stuck, append `SOLUTIONS=1` to both commands to peek at the
    reference config.
 
 ### 2. Milestone 2 - add a second guest + inter-VM communication (17:45 – 18:00)
@@ -613,21 +622,28 @@ under QEMU instead, export `PLATFORM=qemu` and edit the matching skeletons under
    For QEMU, the matching baremetal platform file is
    `guests/baremetal/src/platform/qemu-riscv32-virt-spmp/virt.c`; LED
    commands are logged on the console instead of driving hardware.
-3. For CVA6, flash the matching bitstream if the board is not already
-   programmed:
+3. Build and run:
+   ```bash
+   make build CONFIG=milestone2
+   make run   CONFIG=milestone2
+   ```
+4. The expected result should be Zephyr and the baremetal guest booting on UART0 and UART1, respectively. However, if you are using the CVA6, the result may be a **Bao error** stating that the current hardware has not enough SPMP entries. If you're using QEMU, you can jump to step 7.
+   ```
+   BAO ERROR: insufficient sPMP entries: this scenario does not fit in the 16 sPMP.
+   >>> Expand the hardware: flash the next milestone's bitstream. <<<
+   ```
+5. Bao enforces inter-VM isolation using the SPMP. Flash the milestone-2 bitstream, which increases the number of SPMP entries for Hypervisor usage:
    ```bash
    make flash CONFIG=milestone2
    ```
    This loads the bitstream into the FPGA in a few seconds; skip it if an
    assistant has already loaded it. Press **RESET** before `make run`
    (not PROG).
-
-   Build and run:
+6. Now load and run the milestone-2 binaries again. Zephyr and the baremetal guest should boot on UART0 and UART1 as expected. 
    ```bash
-   make build CONFIG=milestone2
    make run   CONFIG=milestone2
    ```
-4. **What to look for:**
+7. **What to look for:**
    - The baremetal console is UART1 and the Zephyr console is UART0.
      In the default tmux layout, baremetal appears on the left and
      Zephyr on the right.
