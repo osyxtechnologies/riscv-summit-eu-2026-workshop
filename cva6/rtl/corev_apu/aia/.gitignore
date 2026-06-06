@@ -1,0 +1,7 @@
+# Wave outputs
+*.xml
+*.vcd
+*.gtkw
+aia_define.*
+__pycache__
+sim_build
